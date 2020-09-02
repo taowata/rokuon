@@ -1,59 +1,146 @@
 package com.example.rokuon
 
+import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import java.io.IOException
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RecordFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RecordFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var fileName: String = ""
+
+    private var recorder: MediaRecorder? = null
+    private var player: MediaPlayer? = null
+
+    private lateinit var viewModel: RecordViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_record, container, false)
+        val v = inflater.inflate(R.layout.fragment_record, container, false)
+
+        fileName = "${context?.externalCacheDir?.absolutePath}/audiorecordtest.3gp"
+
+        viewModel = ViewModelProvider(this).get(RecordViewModel::class.java)
+        viewModel.initRecordingState()
+        viewModel.initPlayingState()
+
+        val recordButton = v.findViewById<Button>(R.id.record_button)
+        viewModel.isRecording.observe(viewLifecycleOwner, Observer { isRecording ->
+
+            if (isRecording) {
+                recordButton.apply {
+                    setOnClickListener {
+                        stopRecording()
+                        viewModel.switchRecordingState()
+                    }
+                    text = "録音停止"
+                }
+
+            } else {
+                recordButton.apply {
+                    setOnClickListener {
+                        startRecording()
+                        viewModel.switchRecordingState()
+                    }
+                    text = "録音"
+                }
+            }
+        })
+
+        val playButton = v.findViewById<Button>(R.id.play_button)
+        viewModel.isPlaying.observe(viewLifecycleOwner, Observer { isPlaying ->
+            if (isPlaying) {
+                playButton.apply {
+                    setOnClickListener {
+                        stopPlaying()
+                        viewModel.switchPlayingState()
+                    }
+                    text = "再生停止"
+                }
+            } else {
+                playButton.apply {
+                    setOnClickListener {
+                        startPlaying()
+                        viewModel.switchPlayingState()
+                    }
+                    text = "再生"
+                }
+            }
+        })
+
+        return v
+    }
+
+    private fun startPlaying() {
+        player = MediaPlayer().apply {
+            try {
+                setDataSource(fileName)
+                prepare()
+                start()
+            } catch (e: IOException) {
+                Log.e(LOG_TAG, "prepare() failed")
+            }
+        }
+    }
+
+    private fun stopPlaying() {
+        player?.release()
+        player = null
+    }
+
+    private fun startRecording() {
+        recorder = MediaRecorder().apply {
+            // 音源
+            setAudioSource(MediaRecorder.AudioSource.MIC)
+            // 出力ファイル形式
+            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            // 出力ファイル名
+            setOutputFile(fileName)
+            // 音声エンコーダ
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+
+            try {
+                // 初期化の完了
+                prepare()
+            } catch (e: IOException) {
+                Log.e(LOG_TAG, "prepare() failed")
+            }
+            // レコーダーの開始
+            start()
+            Log.i(LOG_TAG, "start() called")
+        }
+    }
+
+    private fun stopRecording() {
+        recorder?.apply {
+            // レコーダーの停止
+            stop()
+            Log.i(LOG_TAG, "stop() called")
+            // MediaRecorderインスタンスの使用を終えたらできるだけ早くリソースを解放する
+            release()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        recorder?.release()
+        recorder = null
+        player?.release()
+        player = null
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RecordFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RecordFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        private const val LOG_TAG = "RecordFragment"
     }
+
 }
