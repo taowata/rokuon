@@ -10,6 +10,10 @@ class RecordViewModel: ViewModel() {
     val isRecording: LiveData<Boolean>
         get() = _isRecording
 
+    private var _isPlaying = MutableLiveData<Boolean>()
+    val isPlaying: LiveData<Boolean>
+        get() = _isPlaying
+
     fun switchRecordingState() {
         when (isRecording.value) {
             true -> _isRecording.postValue(false)
@@ -17,8 +21,19 @@ class RecordViewModel: ViewModel() {
         }
     }
 
-    fun initIsRecording() {
+    fun switchPlayingState() {
+        when (isPlaying.value) {
+            true -> _isPlaying.postValue(false)
+            false -> _isPlaying.postValue(true)
+        }
+    }
+
+    fun initRecordingState() {
         _isRecording.postValue(false)
+    }
+
+    fun initPlayingState() {
+        _isPlaying.postValue(false)
     }
 
 }

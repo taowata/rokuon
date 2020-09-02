@@ -31,7 +31,8 @@ class RecordFragment : Fragment() {
         fileName = "${context?.externalCacheDir?.absolutePath}/audiorecordtest.3gp"
 
         viewModel = ViewModelProvider(this).get(RecordViewModel::class.java)
-        viewModel.initIsRecording()
+        viewModel.initRecordingState()
+        viewModel.initPlayingState()
 
         val recordButton = v.findViewById<Button>(R.id.record_button)
         viewModel.isRecording.observe(viewLifecycleOwner, Observer { isRecording ->
@@ -42,7 +43,7 @@ class RecordFragment : Fragment() {
                         stopRecording()
                         viewModel.switchRecordingState()
                     }
-                    text = "停止"
+                    text = "録音停止"
                 }
 
             } else {
@@ -52,6 +53,27 @@ class RecordFragment : Fragment() {
                         viewModel.switchRecordingState()
                     }
                     text = "録音"
+                }
+            }
+        })
+
+        val playButton = v.findViewById<Button>(R.id.play_button)
+        viewModel.isPlaying.observe(viewLifecycleOwner, Observer { isPlaying ->
+            if (isPlaying) {
+                playButton.apply {
+                    setOnClickListener {
+                        stopPlaying()
+                        viewModel.switchPlayingState()
+                    }
+                    text = "再生停止"
+                }
+            } else {
+                playButton.apply {
+                    setOnClickListener {
+                        startPlaying()
+                        viewModel.switchPlayingState()
+                    }
+                    text = "再生"
                 }
             }
         })
