@@ -33,11 +33,11 @@ class RecordFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(RecordViewModel::class.java)
         viewModel.initIsRecording()
 
-        val button = v.findViewById<Button>(R.id.record_button)
+        val recordButton = v.findViewById<Button>(R.id.record_button)
         viewModel.isRecording.observe(viewLifecycleOwner, Observer { isRecording ->
 
             if (isRecording) {
-                button.apply {
+                recordButton.apply {
                     setOnClickListener {
                         stopRecording()
                         viewModel.switchRecordingState()
@@ -46,7 +46,7 @@ class RecordFragment : Fragment() {
                 }
 
             } else {
-                button.apply {
+                recordButton.apply {
                     setOnClickListener {
                         startRecording()
                         viewModel.switchRecordingState()
