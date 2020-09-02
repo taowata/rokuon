@@ -35,12 +35,26 @@ class RecordFragment : Fragment() {
 
         val button = v.findViewById<Button>(R.id.record_button)
         viewModel.isRecording.observe(viewLifecycleOwner, Observer { isRecording ->
-            button.text = if (isRecording) "停止" else "録音"
-        })
 
-        button.setOnClickListener {
-            viewModel.switchRecordingState()
-        }
+            if (isRecording) {
+                button.apply {
+                    setOnClickListener {
+                        stopRecording()
+                        viewModel.switchRecordingState()
+                    }
+                    text = "停止"
+                }
+
+            } else {
+                button.apply {
+                    setOnClickListener {
+                        startRecording()
+                        viewModel.switchRecordingState()
+                    }
+                    text = "録音"
+                }
+            }
+        })
 
         return v
     }
@@ -81,6 +95,7 @@ class RecordFragment : Fragment() {
             }
             // レコーダーの開始
             start()
+            Log.i(LOG_TAG, "start() called")
         }
     }
 
@@ -88,6 +103,7 @@ class RecordFragment : Fragment() {
         recorder?.apply {
             // レコーダーの停止
             stop()
+            Log.i(LOG_TAG, "stop() called")
             // MediaRecorderインスタンスの使用を終えたらできるだけ早くリソースを解放する
             release()
         }
