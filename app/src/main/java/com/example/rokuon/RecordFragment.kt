@@ -36,49 +36,35 @@ class RecordFragment : Fragment() {
 
         val recordButton = v.findViewById<Button>(R.id.record_button)
         viewModel.isRecording.observe(viewLifecycleOwner, Observer { isRecording ->
-
-            if (isRecording) {
-                recordButton.apply {
-                    setOnClickListener {
-                        stopRecording()
-                        viewModel.switchRecordingState()
-                    }
-                    text = "録音停止"
-                }
-
-            } else {
-                recordButton.apply {
-                    setOnClickListener {
-                        startRecording()
-                        viewModel.switchRecordingState()
-                    }
-                    text = "録音"
-                }
-            }
+            setRecordButton(recordButton, isRecording)
         })
 
         val playButton = v.findViewById<Button>(R.id.play_button)
         viewModel.isPlaying.observe(viewLifecycleOwner, Observer { isPlaying ->
-            if (isPlaying) {
-                playButton.apply {
-                    setOnClickListener {
-                        stopPlaying()
-                        viewModel.switchPlayingState()
-                    }
-                    text = "再生停止"
-                }
-            } else {
-                playButton.apply {
-                    setOnClickListener {
-                        startPlaying()
-                        viewModel.switchPlayingState()
-                    }
-                    text = "再生"
-                }
-            }
+            setPlayButton(playButton, isPlaying)
         })
 
         return v
+    }
+
+    private fun setRecordButton(recordButton: Button, isRecording: Boolean) {
+        recordButton.apply {
+            setOnClickListener {
+                if (isRecording) stopRecording() else startRecording()
+                viewModel.switchRecordingState()
+            }
+            text = if (isRecording) "録音停止" else "録音"
+        }
+    }
+
+    private fun setPlayButton(playButton: Button, isPlaying: Boolean) {
+        playButton.apply {
+            setOnClickListener {
+                if (isPlaying) stopPlaying() else startPlaying()
+                viewModel.switchPlayingState()
+            }
+            text = if (isPlaying) "再生停止" else "再生"
+        }
     }
 
     private fun startPlaying() {
@@ -117,7 +103,6 @@ class RecordFragment : Fragment() {
             }
             // レコーダーの開始
             start()
-            Log.i(LOG_TAG, "start() called")
         }
     }
 
@@ -125,7 +110,6 @@ class RecordFragment : Fragment() {
         recorder?.apply {
             // レコーダーの停止
             stop()
-            Log.i(LOG_TAG, "stop() called")
             // MediaRecorderインスタンスの使用を終えたらできるだけ早くリソースを解放する
             release()
         }
