@@ -23,7 +23,7 @@ data class Record(
             return when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
                     val current = LocalDateTime.now()
-                    val formatter = DateTimeFormatter.ISO_DATE
+                    val formatter = DateTimeFormatter.ofPattern("yyyy/M/dd hh:mm:ss")
                     val formatted = current.format(formatter)
                     formatted.toString()
                 }
@@ -35,9 +35,9 @@ data class Record(
             }
         }
 
-        fun newInstance(context: Context): Record {
+        fun newInstance(context: Context?): Record {
             val record = Record()
-            record.filePath = "${context.externalCacheDir?.absolutePath}/record/${record.recordId}"
+            record.filePath = "${context?.filesDir}/record/レコード固有の番号など"
             record.recordDate = getDate()
             return record
         }
