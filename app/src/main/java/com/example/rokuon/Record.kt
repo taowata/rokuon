@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-@Entity
+@Entity(tableName = "record_table")
 data class Record(
     @ColumnInfo(name = "name") var name: String = "",
     @ColumnInfo(name = "file_path") var filePath: String = "",
