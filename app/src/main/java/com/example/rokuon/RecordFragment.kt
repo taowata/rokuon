@@ -30,9 +30,13 @@ class RecordFragment : Fragment() {
 
         fileName = "${context?.externalCacheDir?.absolutePath}/audiorecordtest.3gp"
 
-        viewModel = ViewModelProvider(this).get(RecordViewModel::class.java)
-        viewModel.initRecordingState()
+        // viewModelの初期化
+        val activity = requireActivity()
+        val dataSource = RecordDatabase.getInstance(activity.application).recordDao
+        val viewModelFactory = RecordViewModelFactory(dataSource)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(RecordViewModel::class.java)
         viewModel.initPlayingState()
+        viewModel.initRecordingState()
 
         val recordButton = v.findViewById<Button>(R.id.record_button)
         viewModel.isRecording.observe(viewLifecycleOwner, Observer { isRecording ->
