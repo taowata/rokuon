@@ -16,5 +16,5 @@ interface RecordDao {
 
     // record_orderの最大値を取得
     @Query("select max(record_order) from record_table")
-    suspend fun getLargestOrder(): Int
+    suspend fun getLargestOrder(): Int?
 }

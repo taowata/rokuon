@@ -45,9 +45,9 @@ class NewRecordDialogFragment : DialogFragment() {
 
         private const val ARG_PARAM1 = "number"
 
-        fun newInstance(id: Long) = NewRecordDialogFragment().apply {
+        fun newInstance(order: Int) = NewRecordDialogFragment().apply {
             arguments = Bundle().apply {
-                putString(ARG_PARAM1, id.toString())
+                putString(ARG_PARAM1, order.toString())
             }
         }
     }

@@ -23,7 +23,8 @@ class RecordViewModel(
         get() = _isPlaying
 
     suspend fun largestOrder() = withContext(Dispatchers.IO) {
-        recordDao.getLargestOrder()
+        val order = recordDao.getLargestOrder()
+        order ?: 1
     }
 
     fun insertRecord(record: Record) = viewModelScope.launch(Dispatchers.IO) {

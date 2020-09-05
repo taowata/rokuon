@@ -126,6 +126,11 @@ class RecordFragment : Fragment() {
         player = null
     }
 
+    private fun showDialogFragment(order: Int) {
+        val newFragment = NewRecordDialogFragment.newInstance(order)
+        newFragment.show(childFragmentManager, "new_record_dialog")
+    }
+
     companion object {
         private const val LOG_TAG = "RecordFragment"
     }
