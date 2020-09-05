@@ -16,6 +16,7 @@ data class Record(
     @ColumnInfo(name = "file_path") var filePath: String = "",
     @ColumnInfo(name = "time") var time: Long = 0L,
     @ColumnInfo(name = "record_date") var recordDate: String = "",
+    @ColumnInfo(name = "record_order") var recordOrder: Int = 0,
     @PrimaryKey(autoGenerate = true) val recordId: Int = 0
 ) {
     companion object {
@@ -35,11 +36,14 @@ data class Record(
             }
         }
 
-        fun newInstance(context: Context?): Record {
+        fun newInstance(context: Context?, order: Int): Record {
             val record = Record()
-            record.filePath = "${context?.filesDir}/record/レコード固有の番号など"
-            record.recordDate = getDate()
-            return record
+            record.apply {
+                filePath = "${context?.filesDir}/record/レコード固有の番号など"
+                recordDate = getDate()
+                recordOrder = order
+                return record
+            }
         }
     }
 }
