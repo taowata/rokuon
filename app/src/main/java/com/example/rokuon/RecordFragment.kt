@@ -35,8 +35,7 @@ class RecordFragment : Fragment() {
         val dataSource = RecordDatabase.getInstance(activity.application).recordDao
         val viewModelFactory = RecordViewModelFactory(dataSource)
         viewModel = ViewModelProvider(this, viewModelFactory).get(RecordViewModel::class.java)
-        viewModel.initPlayingState()
-        viewModel.initRecordingState()
+        viewModel.initLiveData()
 
         val recordButton = v.findViewById<Button>(R.id.record_button)
         viewModel.isRecording.observe(viewLifecycleOwner, Observer { isRecording ->

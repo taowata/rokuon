@@ -44,12 +44,8 @@ class RecordViewModel(
         }
     }
 
-    fun initRecordingState() {
+    fun initLiveData() {
         _isRecording.postValue(false)
-    }
-
-    fun initPlayingState() {
         _isPlaying.postValue(false)
     }
-
 }
