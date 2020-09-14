@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/navigation.xml"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation.xml"
     app:startDestination="@id/recordListFragment">
 
     <fragment
@@ -10,9 +12,25 @@
         <action
             android:id="@+id/action_recordListFragment_to_recordFragment"
             app:destination="@id/recordFragment" />
+        <action
+            android:id="@+id/action_recordListFragment_to_playFragment"
+            app:destination="@id/playFragment" />
     </fragment>
     <fragment
         android:id="@+id/recordFragment"
         android:name="com.example.rokuon.RecordFragment"
-        android:label="RecordFragment" />
+        android:label="RecordFragment" >
+        <action
+            android:id="@+id/action_recordFragment_to_recordListFragment"
+            app:destination="@id/recordListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playFragment"
+        android:name="com.example.rokuon.PlayFragment"
+        android:label="fragment_play"
+        tools:layout="@layout/fragment_play" >
+        <action
+            android:id="@+id/action_playFragment_to_recordListFragment"
+            app:destination="@id/recordListFragment" />
+    </fragment>
 </navigation>

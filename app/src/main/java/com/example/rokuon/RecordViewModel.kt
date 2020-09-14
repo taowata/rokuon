@@ -17,13 +17,6 @@ class RecordViewModel: ViewModel() {
     val recordingTag: LiveData<String>
         get() = _recordingTag
 
-    private var _playingState: MutableLiveData<PlayingState> = MutableLiveData(PlayingState.NOT_PLAYING)
-    val playingState: LiveData<PlayingState> = _playingState
-
-    private var _playingTag: MutableLiveData<String> = MutableLiveData("再生開始")
-    val playingTag: LiveData<String>
-        get() = _playingTag
-
     fun onClickRecordButton() {
         when (recordingState.value) {
             RecordingState.NOT_RECORDING -> {
@@ -36,25 +29,8 @@ class RecordViewModel: ViewModel() {
             }
         }
     }
-
-    fun onClickPlayButton() {
-        when (playingState.value) {
-            PlayingState.NOT_PLAYING -> {
-                _playingTag.value = "再生停止"
-                _playingState.value = PlayingState.PLAYING
-            }
-            PlayingState.PLAYING -> {
-                _playingTag.value = "再生開始"
-                _playingState.value = PlayingState.NOT_PLAYING
-            }
-        }
-    }
 }
 
 enum class RecordingState {
     RECORDING, NOT_RECORDING
-}
-
-enum class PlayingState {
-    PLAYING, NOT_PLAYING
 }
