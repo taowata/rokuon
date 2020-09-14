@@ -44,18 +44,18 @@ class RecordFragment : Fragment() {
         viewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
             recordButton.setOnClickListener {
                 if (recordingState == RecordingState.RECORDING) {
-                    val newRecord = Record(
-                        name = editTextView.text.toString(),
-                        filePath = filePath,
-                        time = Record.getDate(),
-                        recordOrder = order
-                    )
-                    editTextView.text.clear()
-                    viewModel.insertRecord(newRecord)
+//                    val newRecord = Record(
+//                        name = editTextView.text.toString(),
+//                        filePath = filePath,
+//                        time = Record.getDate(),
+//                        recordOrder = order
+//                    )
+//                    editTextView.text.clear()
+//                    viewModel.insertRecord(newRecord)
                     stopRecording()
                 } else {
-                    order = viewModel.largestOrder.value ?: 1
-                    filePath = dirPath + order
+//                    order = viewModel.largestOrder.value ?: 1
+//                    filePath = dirPath + order
                     startRecording(filePath)
                 }
                 viewModel.onClickRecordButton()
