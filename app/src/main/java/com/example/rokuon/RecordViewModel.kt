@@ -14,9 +14,8 @@ class RecordViewModel(
 
     val recordList: LiveData<List<Record>> = recordDao.allRecord()
 
-    private var _isRecording: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isRecording: LiveData<Boolean>
-        get() = _isRecording
+    private var _recordingState: MutableLiveData<RecordingState> = MutableLiveData(RecordingState.NOT_RECORDING)
+    val recordingState: LiveData<RecordingState> = _recordingState
 
     private var _recordingTag: MutableLiveData<String> = MutableLiveData("録音開始")
     val recordingTag: LiveData<String>
@@ -40,14 +39,14 @@ class RecordViewModel(
     }
 
     fun onClickRecordButton() {
-        when (isRecording.value) {
-            true -> {
-                _recordingTag.value = "録音開始"
-                _isRecording.value = false
-            }
-            false -> {
+        when (recordingState.value) {
+            RecordingState.NOT_RECORDING -> {
                 _recordingTag.value = "録音停止"
-                _isRecording.value = true
+                _recordingState.value = RecordingState.RECORDING
+            }
+            RecordingState.RECORDING -> {
+                _recordingTag.value = "録音開始"
+                _recordingState.value = RecordingState.NOT_RECORDING
             }
         }
     }
@@ -63,5 +62,9 @@ class RecordViewModel(
                 _isPlaying.value = true
             }
         }
+    }
+
+    enum class RecordingState {
+        RECORDING, NOT_RECORDING
     }
 }

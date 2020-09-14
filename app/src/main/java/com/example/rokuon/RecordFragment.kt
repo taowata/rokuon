@@ -34,9 +34,9 @@ class RecordFragment : Fragment() {
         val viewModel: RecordViewModel by viewModels { viewModelFactory }
 
         val recordButton = v.findViewById<Button>(R.id.record_button)
-        viewModel.isRecording.observe(viewLifecycleOwner) { isRecording ->
+        viewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
             recordButton.setOnClickListener {
-                if (isRecording) stopRecording() else startRecording()
+                if (recordingState == RecordViewModel.RecordingState.RECORDING) stopRecording() else startRecording()
                 viewModel.onClickRecordButton()
             }
         }
