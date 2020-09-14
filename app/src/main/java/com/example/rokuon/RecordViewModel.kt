@@ -8,8 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RecordViewModel(
-) : ViewModel() {
+class RecordViewModel: ViewModel() {
 
     private var _recordingState: MutableLiveData<RecordingState> = MutableLiveData(RecordingState.NOT_RECORDING)
     val recordingState: LiveData<RecordingState> = _recordingState

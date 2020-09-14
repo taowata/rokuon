@@ -34,10 +34,7 @@ class RecordFragment : Fragment() {
         dirPath = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}"
 
         // viewModelの初期化
-        val activity = requireActivity()
-        val dataSource = RecordDatabase.getInstance(activity.application).recordDao
-        val viewModelFactory = RecordViewModelFactory(dataSource)
-        val viewModel: RecordViewModel by viewModels { viewModelFactory }
+        val viewModel: RecordViewModel by viewModels()
 
         val recordButton = binding.recordButton
         val editTextView = binding.recordNameEdit
@@ -127,11 +124,6 @@ class RecordFragment : Fragment() {
         super.onStop()
         recorder?.release()
         player?.release()
-    }
-
-    private fun showDialogFragment(order: Int) {
-        val newFragment = NewRecordDialogFragment.newInstance(order)
-        newFragment.show(childFragmentManager, "new_record_dialog")
     }
 
     companion object {
