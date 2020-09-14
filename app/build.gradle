@@ -65,4 +65,8 @@ dependencies {
     // FragmentKTX
     implementation 'androidx.fragment:fragment-ktx:1.3.0-alpha08'
 
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
+
 }

@@ -39,17 +39,6 @@ class RecordFragment : Fragment() {
         val viewModelFactory = RecordViewModelFactory(dataSource)
         val viewModel: RecordViewModel by viewModels { viewModelFactory }
 
-        // RecyclerViewのセットアップ
-        val recyclerView = binding.recordList
-        recyclerView.layoutManager = LinearLayoutManager(this.context)
-        val adapter = RecordListAdapter()
-        recyclerView.adapter = adapter
-
-        viewModel.recordList.observe(viewLifecycleOwner) {
-            adapter.setRecords(it)
-            recyclerView.adapter = adapter
-        }
-
         val recordButton = binding.recordButton
         val editTextView = binding.recordNameEdit
         viewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
