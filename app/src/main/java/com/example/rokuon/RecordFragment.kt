@@ -3,6 +3,7 @@ package com.example.rokuon
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import java.io.IOException
 
 class RecordFragment : Fragment() {
 
+    private var dirPath: String = ""
     private var fileName: String = ""
 
     private lateinit var recorder: MediaRecorder
@@ -25,7 +27,7 @@ class RecordFragment : Fragment() {
     ): View? {
         val v = inflater.inflate(R.layout.fragment_record, container, false)
 
-        fileName = "${context?.externalCacheDir?.absolutePath}/audiorecordtest.3gp"
+        dirPath = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}"
 
         // viewModelの初期化
         val activity = requireActivity()
@@ -36,7 +38,10 @@ class RecordFragment : Fragment() {
         val recordButton = v.findViewById<Button>(R.id.record_button)
         viewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
             recordButton.setOnClickListener {
-                if (recordingState == RecordingState.RECORDING) stopRecording() else startRecording()
+                val order = viewModel.largestOrder.value ?: 1
+                val filePath = dirPath + order
+                if (recordingState == RecordingState.RECORDING) stopRecording() else startRecording(filePath)
+                fileName = filePath
                 viewModel.onClickRecordButton()
             }
         }
@@ -74,14 +79,14 @@ class RecordFragment : Fragment() {
         player.release()
     }
 
-    private fun startRecording() {
+    private fun startRecording(filePath: String) {
         recorder = MediaRecorder().apply {
             // 音源
             setAudioSource(MediaRecorder.AudioSource.MIC)
             // 出力ファイル形式
             setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
             // 出力ファイル名
-            setOutputFile(fileName)
+            setOutputFile(filePath)
             // 音声エンコーダ
             setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
         }
@@ -116,5 +121,4 @@ class RecordFragment : Fragment() {
     companion object {
         private const val LOG_TAG = "RecordFragment"
     }
-
 }

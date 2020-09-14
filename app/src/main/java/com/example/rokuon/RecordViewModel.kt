@@ -13,6 +13,7 @@ class RecordViewModel(
 ) : ViewModel() {
 
     val recordList: LiveData<List<Record>> = recordDao.allRecord()
+    val largestOrder: LiveData<Int> = recordDao.getLargestOrder()
 
     private var _recordingState: MutableLiveData<RecordingState> = MutableLiveData(RecordingState.NOT_RECORDING)
     val recordingState: LiveData<RecordingState> = _recordingState
@@ -27,11 +28,6 @@ class RecordViewModel(
     private var _playingTag: MutableLiveData<String> = MutableLiveData("再生開始")
     val playingTag: LiveData<String>
         get() = _playingTag
-
-    suspend fun largestOrder() = withContext(Dispatchers.IO) {
-        val order = recordDao.getLargestOrder()
-        order ?: 1
-    }
 
     fun insertRecord(record: Record) = viewModelScope.launch(Dispatchers.IO) {
         recordDao.insert(record)
