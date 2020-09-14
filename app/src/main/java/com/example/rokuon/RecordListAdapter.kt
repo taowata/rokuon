@@ -5,13 +5,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rokuon.databinding.RecordListItemBinding
 
-class RecordListAdapter : RecyclerView.Adapter<RecordListAdapter.RecordViewHolder>() {
+class RecordListAdapter(
+    private val clickEvent: ClickEvent
+) : RecyclerView.Adapter<RecordListAdapter.RecordViewHolder>() {
 
     private var records: List<Record> = mutableListOf(Record())
 
     class RecordViewHolder(private val binding: RecordListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Record) {
+        fun bind(item: Record, clickEvent: ClickEvent) {
             binding.record = item
+            binding.clickEvent = clickEvent
             binding.executePendingBindings()
         }
         companion object {
@@ -32,7 +35,7 @@ class RecordListAdapter : RecyclerView.Adapter<RecordListAdapter.RecordViewHolde
 
     override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
         val current = records[position]
-        holder.bind(current)
+        holder.bind(current, clickEvent)
     }
 
     override fun getItemCount(): Int = records.size
@@ -42,4 +45,8 @@ class RecordListAdapter : RecyclerView.Adapter<RecordListAdapter.RecordViewHolde
         notifyDataSetChanged()
     }
 
+}
+
+class ClickEvent(val onClickListener: (record: Record) -> Unit) {
+    fun goToPlayFragment(record: Record) = onClickListener(record)
 }

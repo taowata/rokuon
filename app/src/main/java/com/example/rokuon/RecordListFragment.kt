@@ -24,7 +24,12 @@ class RecordListFragment : Fragment() {
         // RecyclerViewのセットアップ
         val recyclerView = binding.recordList
         recyclerView.layoutManager = LinearLayoutManager(this.context)
-        val adapter = RecordListAdapter()
+        val adapter = RecordListAdapter(
+        ClickEvent {
+            val arg = it.filePath
+            val action = RecordListFragmentDirections.actionRecordListFragmentToPlayFragment(arg)
+            findNavController().navigate(action)
+        })
         recyclerView.adapter = adapter
 
 

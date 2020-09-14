@@ -32,5 +32,8 @@
         <action
             android:id="@+id/action_playFragment_to_recordListFragment"
             app:destination="@id/recordListFragment" />
+        <argument
+            android:name="filePath"
+            app:argType="string" />
     </fragment>
 </navigation>
