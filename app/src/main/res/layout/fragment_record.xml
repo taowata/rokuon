@@ -28,12 +28,10 @@
 
     <EditText
         android:id="@+id/record_name_edit"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="録音名を入力してください"
-        android:inputType="textPersonName"
-        android:text="Name"
+        android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/play_button"
         app:layout_constraintEnd_toStartOf="@+id/record_button"
         app:layout_constraintHorizontal_bias="0.5"
