@@ -5,6 +5,9 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupActionBarWithNavController
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,16 +34,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
-
         setContentView(R.layout.activity_main)
-        showsRecordFragment()
-    }
 
-    private fun showsRecordFragment() {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.record_fragment_container, RecordFragment())
-            .addToBackStack(null)
-            .commit()
+        val navController = findNavController(this, R.id.nav_host_fragment_container)
+        navController.navigate(R.id.recordListFragment)
     }
 
     companion object {
