@@ -9,18 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import java.io.IOException
 
 class RecordFragment : Fragment() {
 
     private var fileName: String = ""
 
-    private var recorder: MediaRecorder? = null
-    private var player: MediaPlayer? = null
-
-    private lateinit var viewModel: RecordViewModel
+    private lateinit var recorder: MediaRecorder
+    private lateinit var player: MediaPlayer
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,57 +31,47 @@ class RecordFragment : Fragment() {
         val activity = requireActivity()
         val dataSource = RecordDatabase.getInstance(activity.application).recordDao
         val viewModelFactory = RecordViewModelFactory(dataSource)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(RecordViewModel::class.java)
-        viewModel.initLiveData()
+        val viewModel: RecordViewModel by viewModels { viewModelFactory }
 
         val recordButton = v.findViewById<Button>(R.id.record_button)
-        viewModel.isRecording.observe(viewLifecycleOwner, Observer { isRecording ->
-            setRecordButton(recordButton, isRecording)
-        })
+        viewModel.isRecording.observe(viewLifecycleOwner) { isRecording ->
+            recordButton.setOnClickListener {
+                if (isRecording) stopRecording() else startRecording()
+                viewModel.onClickRecordButton()
+            }
+        }
+        viewModel.recordingTag.observe(viewLifecycleOwner) {
+            recordButton.text = it
+        }
 
         val playButton = v.findViewById<Button>(R.id.play_button)
-        viewModel.isPlaying.observe(viewLifecycleOwner, Observer { isPlaying ->
-            setPlayButton(playButton, isPlaying)
-        })
+        viewModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
+            playButton.setOnClickListener {
+                if (isPlaying) stopPlaying() else startPlaying()
+                viewModel.onClickPlayButton()
+            }
+        }
+        viewModel.playingTag.observe(viewLifecycleOwner) {
+            playButton.text = it
+        }
 
         return v
     }
 
-    private fun setRecordButton(recordButton: Button, isRecording: Boolean) {
-        recordButton.apply {
-            setOnClickListener {
-                if (isRecording) stopRecording() else startRecording()
-                viewModel.switchRecordingState()
-            }
-            text = if (isRecording) "録音停止" else "録音"
-        }
-    }
-
-    private fun setPlayButton(playButton: Button, isPlaying: Boolean) {
-        playButton.apply {
-            setOnClickListener {
-                if (isPlaying) stopPlaying() else startPlaying()
-                viewModel.switchPlayingState()
-            }
-            text = if (isPlaying) "再生停止" else "再生"
-        }
-    }
-
     private fun startPlaying() {
-        player = MediaPlayer().apply {
-            try {
-                setDataSource(fileName)
-                prepare()
-                start()
-            } catch (e: IOException) {
-                Log.e(LOG_TAG, "prepare() failed")
-            }
+        player = MediaPlayer()
+        player.setDataSource(fileName)
+        try {
+            player.prepare()
+            player.start()
+        } catch (e: IOException) {
+            Log.e(LOG_TAG, "prepare() failed")
         }
+
     }
 
     private fun stopPlaying() {
-        player?.release()
-        player = null
+        player.release()
     }
 
     private fun startRecording() {
@@ -97,33 +84,28 @@ class RecordFragment : Fragment() {
             setOutputFile(fileName)
             // 音声エンコーダ
             setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-
-            try {
-                // 初期化の完了
-                prepare()
-            } catch (e: IOException) {
-                Log.e(LOG_TAG, "prepare() failed")
-            }
-            // レコーダーの開始
-            start()
         }
+        try {
+            // 初期化の完了
+            recorder.prepare()
+        } catch (e: IOException) {
+            Log.e(LOG_TAG, "prepare() failed")
+        }
+        // レコーダーの開始
+        recorder.start()
     }
 
     private fun stopRecording() {
-        recorder?.apply {
-            // レコーダーの停止
-            stop()
-            // MediaRecorderインスタンスの使用を終えたらできるだけ早くリソースを解放する
-            release()
-        }
+        // レコーダーの停止
+        recorder.stop()
+        // MediaRecorderインスタンスの使用を終えたらできるだけ早くリソースを解放する
+        recorder.release()
     }
 
     override fun onStop() {
         super.onStop()
-        recorder?.release()
-        recorder = null
-        player?.release()
-        player = null
+        recorder.release()
+        player.release()
     }
 
     private fun showDialogFragment(order: Int) {

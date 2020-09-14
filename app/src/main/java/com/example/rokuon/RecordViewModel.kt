@@ -14,13 +14,21 @@ class RecordViewModel(
 
     val recordList: LiveData<List<Record>> = recordDao.allRecord()
 
-    private var _isRecording = MutableLiveData<Boolean>()
+    private var _isRecording: MutableLiveData<Boolean> = MutableLiveData(false)
     val isRecording: LiveData<Boolean>
         get() = _isRecording
 
-    private var _isPlaying = MutableLiveData<Boolean>()
+    private var _recordingTag: MutableLiveData<String> = MutableLiveData("録音開始")
+    val recordingTag: LiveData<String>
+        get() = _recordingTag
+
+    private var _isPlaying: MutableLiveData<Boolean> = MutableLiveData(false)
     val isPlaying: LiveData<Boolean>
         get() = _isPlaying
+
+    private var _playingTag: MutableLiveData<String> = MutableLiveData("再生開始")
+    val playingTag: LiveData<String>
+        get() = _playingTag
 
     suspend fun largestOrder() = withContext(Dispatchers.IO) {
         val order = recordDao.getLargestOrder()
@@ -31,22 +39,29 @@ class RecordViewModel(
         recordDao.insert(record)
     }
 
-    fun switchRecordingState() {
+    fun onClickRecordButton() {
         when (isRecording.value) {
-            true -> _isRecording.postValue(false)
-            false -> _isRecording.postValue(true)
+            true -> {
+                _recordingTag.value = "録音開始"
+                _isRecording.value = false
+            }
+            false -> {
+                _recordingTag.value = "録音停止"
+                _isRecording.value = true
+            }
         }
     }
 
-    fun switchPlayingState() {
+    fun onClickPlayButton() {
         when (isPlaying.value) {
-            true -> _isPlaying.postValue(false)
-            false -> _isPlaying.postValue(true)
+            true -> {
+                _playingTag.value = "再生開始"
+                _isPlaying.value = false
+            }
+            false -> {
+                _playingTag.value = "再生停止"
+                _isPlaying.value = true
+            }
         }
-    }
-
-    fun initLiveData() {
-        _isRecording.postValue(false)
-        _isPlaying.postValue(false)
     }
 }
