@@ -36,7 +36,7 @@ class RecordFragment : Fragment() {
         val recordButton = v.findViewById<Button>(R.id.record_button)
         viewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
             recordButton.setOnClickListener {
-                if (recordingState == RecordViewModel.RecordingState.RECORDING) stopRecording() else startRecording()
+                if (recordingState == RecordingState.RECORDING) stopRecording() else startRecording()
                 viewModel.onClickRecordButton()
             }
         }
@@ -45,9 +45,9 @@ class RecordFragment : Fragment() {
         }
 
         val playButton = v.findViewById<Button>(R.id.play_button)
-        viewModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
+        viewModel.playingState.observe(viewLifecycleOwner) { playingState ->
             playButton.setOnClickListener {
-                if (isPlaying) stopPlaying() else startPlaying()
+                if (playingState == PlayingState.PLAYING) stopPlaying() else startPlaying()
                 viewModel.onClickPlayButton()
             }
         }
