@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.viewModels
+import com.example.rokuon.databinding.FragmentRecordBinding
 import java.io.IOException
 
 class RecordFragment : Fragment() {
@@ -27,7 +28,7 @@ class RecordFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val v = inflater.inflate(R.layout.fragment_record, container, false)
+        val binding = FragmentRecordBinding.inflate(layoutInflater, container, false)
 
         dirPath = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}"
 
@@ -37,8 +38,8 @@ class RecordFragment : Fragment() {
         val viewModelFactory = RecordViewModelFactory(dataSource)
         val viewModel: RecordViewModel by viewModels { viewModelFactory }
 
-        val recordButton = v.findViewById<Button>(R.id.record_button)
-        val editTextView = v.findViewById<EditText>(R.id.record_name_edit)
+        val recordButton = binding.recordButton
+        val editTextView = binding.recordNameEdit
         viewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
             recordButton.setOnClickListener {
                 if (recordingState == RecordingState.RECORDING) {
@@ -62,7 +63,7 @@ class RecordFragment : Fragment() {
             recordButton.text = it
         }
 
-        val playButton = v.findViewById<Button>(R.id.play_button)
+        val playButton = binding.playButton
         viewModel.playingState.observe(viewLifecycleOwner) { playingState ->
             playButton.setOnClickListener {
                 if (playingState == PlayingState.PLAYING) stopPlaying() else startPlaying()
@@ -73,7 +74,7 @@ class RecordFragment : Fragment() {
             playButton.text = it
         }
 
-        return v
+        return binding.root
     }
 
     private fun startPlaying() {
