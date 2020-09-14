@@ -10,13 +10,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import androidx.fragment.app.viewModels
 import java.io.IOException
 
 class RecordFragment : Fragment() {
 
     private var dirPath: String = ""
-    private var fileName: String = ""
+    private var filePath: String = ""
+    private var order: Int = 0
 
     private lateinit var recorder: MediaRecorder
     private lateinit var player: MediaPlayer
@@ -38,10 +40,20 @@ class RecordFragment : Fragment() {
         val recordButton = v.findViewById<Button>(R.id.record_button)
         viewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
             recordButton.setOnClickListener {
-                val order = viewModel.largestOrder.value ?: 1
-                val filePath = dirPath + order
-                if (recordingState == RecordingState.RECORDING) stopRecording() else startRecording(filePath)
-                fileName = filePath
+                if (recordingState == RecordingState.RECORDING) {
+                    stopRecording()
+                    val editTextView = v.findViewById<EditText>(R.id.record_name_edit)
+                    val newRecord = Record(
+                        name = editTextView.text.toString(),
+                        filePath = filePath,
+                        time = Record.getDate(),
+                        recordOrder = order
+                    )
+                } else {
+                    order = viewModel.largestOrder.value ?: 1
+                    filePath = dirPath + order
+                    startRecording(filePath)
+                }
                 viewModel.onClickRecordButton()
             }
         }
@@ -65,7 +77,7 @@ class RecordFragment : Fragment() {
 
     private fun startPlaying() {
         player = MediaPlayer()
-        player.setDataSource(fileName)
+        player.setDataSource(filePath)
         try {
             player.prepare()
             player.start()
