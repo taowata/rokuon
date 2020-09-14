@@ -1,16 +1,20 @@
 package com.example.rokuon
 
 import android.os.Bundle
+import android.os.Environment
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rokuon.databinding.FragmentRecordListBinding
 import com.example.rokuon.databinding.RecordListItemBinding
 
 class RecordListFragment : Fragment() {
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -20,14 +24,22 @@ class RecordListFragment : Fragment() {
         // RecyclerViewのセットアップ
         val recyclerView = binding.recordList
         recyclerView.layoutManager = LinearLayoutManager(this.context)
-        val adapter = RecordListAdapter()
+        val adapter = RecordListAdapter(
+        ClickEvent {
+            val arg = it.filePath
+            val action = RecordListFragmentDirections.actionRecordListFragmentToPlayFragment(arg)
+            findNavController().navigate(action)
+        })
         recyclerView.adapter = adapter
+
+
+        val dirPath = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}"
 
         // viewModelの初期化
         val activity = requireActivity()
         val dataSource = RecordDatabase.getInstance(activity.application).recordDao
         val viewModelFactory = RecordListViewModelFactory(dataSource)
-        val viewModel: RecordListViewModel by viewModels { viewModelFactory }
+        val viewModel: RecordListViewModel by activityViewModels { viewModelFactory }
 
         viewModel.recordList.observe(viewLifecycleOwner) {
             adapter.setRecords(it)
@@ -35,9 +47,18 @@ class RecordListFragment : Fragment() {
         }
 
         val fab = binding.fab
+        val recordName = binding.editTextRecordName
         fab.setOnClickListener {
-            val newRecord = Record(name = "録音", recordDate = Record.getDate())
-            viewModel.insertRecord(newRecord)
+            val order = viewModel.largestOrder.value ?: 0
+            val filePath = dirPath + "$order"
+            val newRecord = Record(
+                name = recordName.text.toString(),
+                filePath = filePath,
+                recordOrder = order + 1,
+                recordDate = Record.getDate()
+            )
+            viewModel.newRecord = newRecord
+            findNavController().navigate(R.id.action_recordListFragment_to_recordFragment)
         }
 
         return binding.root

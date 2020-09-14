@@ -15,6 +15,8 @@ class RecordListViewModel(
     val recordList: LiveData<List<Record>> = recordDao.allRecord()
     val largestOrder: LiveData<Int> = recordDao.getLargestOrder()
 
+    var newRecord: Record = Record()
+
     fun insertRecord(record: Record) = viewModelScope.launch(Dispatchers.IO) {
         recordDao.insert(record)
     }
