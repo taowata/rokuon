@@ -34,6 +34,12 @@ class RecordListFragment : Fragment() {
             adapter.notifyDataSetChanged()
         }
 
+        val fab = binding.fab
+        fab.setOnClickListener {
+            val newRecord = Record(name = "録音", recordDate = Record.getDate())
+            viewModel.insertRecord(newRecord)
+        }
+
         return binding.root
     }
 

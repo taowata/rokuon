@@ -7,7 +7,7 @@ class RecordListViewModelFactory(
     private val dataSource: RecordDao
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(RecordViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(RecordListViewModel::class.java)) {
             return RecordListViewModel(dataSource) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
