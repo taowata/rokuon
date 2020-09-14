@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rokuon.databinding.FragmentRecordListBinding
 import com.example.rokuon.databinding.RecordListItemBinding
@@ -52,8 +53,7 @@ class RecordListFragment : Fragment() {
                 recordDate = Record.getDate()
             )
             viewModel.newRecord = newRecord
-            viewModel.insertRecord(newRecord)
-            recordName.text.clear()
+            findNavController().navigate(R.id.action_recordListFragment_to_recordFragment)
         }
 
         return binding.root

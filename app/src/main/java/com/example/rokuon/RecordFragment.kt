@@ -13,17 +13,17 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rokuon.databinding.FragmentRecordBinding
 import java.io.IOException
 
 class RecordFragment : Fragment() {
 
-    private var dirPath: String = ""
     private var filePath: String = ""
-    private var order: Int = 0
 
-    private  lateinit var recorder: MediaRecorder
+    private lateinit var recorder: MediaRecorder
+    private lateinit var newRecord: Record
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,17 +35,26 @@ class RecordFragment : Fragment() {
         val recordViewModel: RecordViewModel by viewModels()
         val recordListViewModel: RecordListViewModel by activityViewModels()
 
-        filePath = recordListViewModel.newRecord.filePath
+        newRecord = recordListViewModel.newRecord
+        filePath = newRecord.filePath
 
         val recordButton = binding.recordButton
         recordViewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
             recordButton.setOnClickListener {
-                if (recordingState == RecordingState.RECORDING) stopRecording() else startRecording(filePath)
+                if (recordingState == RecordingState.RECORDING) {
+                    stopRecording()
+                    recordListViewModel.insertRecord(newRecord)
+                } else startRecording(filePath)
                 recordViewModel.onClickRecordButton()
             }
         }
         recordViewModel.recordingTag.observe(viewLifecycleOwner) {
             recordButton.text = it
+        }
+
+        val backToHomeButton = binding.backButton
+        backToHomeButton.setOnClickListener {
+            findNavController().navigate(R.id.action_recordFragment_to_recordListFragment)
         }
         return binding.root
     }
