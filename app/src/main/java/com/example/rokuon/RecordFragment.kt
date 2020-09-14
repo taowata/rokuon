@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rokuon.databinding.FragmentRecordBinding
@@ -30,19 +31,20 @@ class RecordFragment : Fragment() {
     ): View? {
         val binding = FragmentRecordBinding.inflate(layoutInflater, container, false)
 
-        dirPath = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}"
-
         // viewModelの初期化
-        val viewModel: RecordViewModel by viewModels()
+        val recordViewModel: RecordViewModel by viewModels()
+        val recordListViewModel: RecordListViewModel by activityViewModels()
+
+        filePath = recordListViewModel.newRecord.filePath
 
         val recordButton = binding.recordButton
-        viewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
+        recordViewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
             recordButton.setOnClickListener {
                 if (recordingState == RecordingState.RECORDING) stopRecording() else startRecording(filePath)
-                viewModel.onClickRecordButton()
+                recordViewModel.onClickRecordButton()
             }
         }
-        viewModel.recordingTag.observe(viewLifecycleOwner) {
+        recordViewModel.recordingTag.observe(viewLifecycleOwner) {
             recordButton.text = it
         }
         return binding.root
