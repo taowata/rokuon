@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rokuon.databinding.FragmentRecordBinding
 import java.io.IOException
 
@@ -21,8 +22,8 @@ class RecordFragment : Fragment() {
     private var filePath: String = ""
     private var order: Int = 0
 
-    private lateinit var recorder: MediaRecorder
-    private lateinit var player: MediaPlayer
+    private  var recorder: MediaRecorder? = null
+    private  var player: MediaPlayer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,19 +39,31 @@ class RecordFragment : Fragment() {
         val viewModelFactory = RecordViewModelFactory(dataSource)
         val viewModel: RecordViewModel by viewModels { viewModelFactory }
 
+        // RecyclerViewのセットアップ
+        val recyclerView = binding.recordList
+        recyclerView.layoutManager = LinearLayoutManager(this.context)
+        val adapter = RecordListAdapter()
+        recyclerView.adapter = adapter
+
+        viewModel.recordList.observe(viewLifecycleOwner) {
+            adapter.setRecords(it)
+            recyclerView.adapter = adapter
+        }
+
         val recordButton = binding.recordButton
         val editTextView = binding.recordNameEdit
         viewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
             recordButton.setOnClickListener {
                 if (recordingState == RecordingState.RECORDING) {
-                    stopRecording()
                     val newRecord = Record(
                         name = editTextView.text.toString(),
                         filePath = filePath,
                         time = Record.getDate(),
                         recordOrder = order
                     )
+                    editTextView.text.clear()
                     viewModel.insertRecord(newRecord)
+                    stopRecording()
                 } else {
                     order = viewModel.largestOrder.value ?: 1
                     filePath = dirPath + order
@@ -79,10 +92,10 @@ class RecordFragment : Fragment() {
 
     private fun startPlaying() {
         player = MediaPlayer()
-        player.setDataSource(filePath)
+        player?.setDataSource(filePath)
         try {
-            player.prepare()
-            player.start()
+            player?.prepare()
+            player?.start()
         } catch (e: IOException) {
             Log.e(LOG_TAG, "prepare() failed")
         }
@@ -90,7 +103,7 @@ class RecordFragment : Fragment() {
     }
 
     private fun stopPlaying() {
-        player.release()
+        player?.release()
     }
 
     private fun startRecording(filePath: String) {
@@ -106,25 +119,25 @@ class RecordFragment : Fragment() {
         }
         try {
             // 初期化の完了
-            recorder.prepare()
+            recorder?.prepare()
         } catch (e: IOException) {
             Log.e(LOG_TAG, "prepare() failed")
         }
         // レコーダーの開始
-        recorder.start()
+        recorder?.start()
     }
 
     private fun stopRecording() {
         // レコーダーの停止
-        recorder.stop()
+        recorder?.stop()
         // MediaRecorderインスタンスの使用を終えたらできるだけ早くリソースを解放する
-        recorder.release()
+        recorder?.release()
     }
 
     override fun onStop() {
         super.onStop()
-        recorder.release()
-        player.release()
+        recorder?.release()
+        player?.release()
     }
 
     private fun showDialogFragment(order: Int) {

@@ -7,7 +7,7 @@ import com.example.rokuon.databinding.RecordListItemBinding
 
 class RecordListAdapter : RecyclerView.Adapter<RecordListAdapter.RecordViewHolder>() {
 
-    private var records = emptyList<Record>()
+    private var records: List<Record> = mutableListOf(Record())
 
     class RecordViewHolder(private val binding: RecordListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Record) {
