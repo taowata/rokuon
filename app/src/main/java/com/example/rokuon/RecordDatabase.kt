@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 @Database(entities = [Record::class], version = 1, exportSchema = false)
+@TypeConverters(DateConverters::class)
 abstract class RecordDatabase : RoomDatabase() {
     abstract val recordDao: RecordDao
 

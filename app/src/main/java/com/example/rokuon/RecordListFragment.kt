@@ -32,7 +32,6 @@ class RecordListFragment : Fragment() {
         })
         recyclerView.adapter = adapter
 
-
         val dirPath = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}"
 
         // viewModelの初期化
@@ -54,8 +53,7 @@ class RecordListFragment : Fragment() {
             val newRecord = Record(
                 name = recordName.text.toString(),
                 filePath = filePath,
-                recordOrder = order + 1,
-                recordDate = Record.getDate()
+                recordOrder = order + 1
             )
             viewModel.newRecord = newRecord
             findNavController().navigate(R.id.action_recordListFragment_to_recordFragment)
