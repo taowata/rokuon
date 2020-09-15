@@ -1,5 +1,6 @@
 package com.example.rokuon
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,7 @@ class RecordViewModel: ViewModel() {
     val recordingTag: LiveData<String>
         get() = _recordingTag
 
+    @MainThread
     fun onClickRecordButton() {
         when (recordingState.value) {
             RecordingState.NOT_RECORDING -> {
