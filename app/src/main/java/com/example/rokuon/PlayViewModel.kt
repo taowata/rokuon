@@ -1,5 +1,6 @@
 package com.example.rokuon
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ class PlayViewModel: ViewModel() {
     val playingTag: LiveData<String>
         get() = _playingTag
 
+    @MainThread
     fun onClickPlayButton() {
         when (playingState.value) {
             PlayingState.NOT_PLAYING -> {
