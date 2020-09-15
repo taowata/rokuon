@@ -14,26 +14,7 @@ import java.util.*
 data class Record(
     @ColumnInfo(name = "name") var name: String = "",
     @ColumnInfo(name = "file_path") var filePath: String = "",
-    @ColumnInfo(name = "time") var time: String = "",
-    @ColumnInfo(name = "record_date") var recordDate: String = "",
+    @ColumnInfo(name = "record_date") var recordDate: Date = Date(),
     @ColumnInfo(name = "record_order") var recordOrder: Int = 0,
     @PrimaryKey(autoGenerate = true) val recordId: Int = 0
-) {
-    companion object {
-        fun getDate(): String {
-            return when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                    val current = LocalDateTime.now()
-                    val formatter = DateTimeFormatter.ofPattern("yyyy/M/dd hh:mm:ss")
-                    val formatted = current.format(formatter)
-                    formatted.toString()
-                }
-                else -> {
-                    val sdf = SimpleDateFormat("yyyy/M/dd hh:mm:ss", Locale.getDefault())
-                    val currentDate = sdf.format(Date())
-                    return currentDate.toString()
-                }
-            }
-        }
-    }
-}
+)
