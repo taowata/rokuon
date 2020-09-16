@@ -22,7 +22,6 @@ class RecordFragment : Fragment() {
 
     private var filePath: String = ""
 
-    private lateinit var recorder: MediaRecorder
     private lateinit var newRecord: Record
 
     override fun onCreateView(
@@ -32,22 +31,19 @@ class RecordFragment : Fragment() {
         val binding = FragmentRecordBinding.inflate(layoutInflater, container, false)
 
         // viewModelの初期化
-        val recordViewModel: RecordViewModel by viewModels()
+        val audioRecorder = AudioRecorder()
+        val recordViewModelFactory =  RecordViewModelFactory(audioRecorder)
+        val recordViewModel: RecordViewModel by viewModels { recordViewModelFactory }
         val recordListViewModel: RecordListViewModel by activityViewModels()
 
         newRecord = recordListViewModel.newRecord
         filePath = newRecord.filePath
 
         val recordButton = binding.recordButton
-        recordViewModel.recordingState.observe(viewLifecycleOwner) { recordingState ->
-            recordButton.setOnClickListener {
-                if (recordingState == RecordingState.RECORDING) {
-                    stopRecording()
-                    recordListViewModel.insertRecord(newRecord)
-                } else startRecording(filePath)
-                recordViewModel.onClickRecordButton()
-            }
+        recordButton.setOnClickListener {
+            recordViewModel.onClickRecordButton(filePath)
         }
+
         recordViewModel.recordingTag.observe(viewLifecycleOwner) {
             recordButton.text = it
         }
@@ -58,8 +54,13 @@ class RecordFragment : Fragment() {
         }
         return binding.root
     }
+}
 
-    private fun startRecording(filePath: String) {
+class AudioRecorder {
+
+    private var recorder: MediaRecorder? = null
+
+    fun startRecording(filePath: String) {
         recorder = MediaRecorder().apply {
             // 音源
             setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -72,27 +73,22 @@ class RecordFragment : Fragment() {
         }
         try {
             // 初期化の完了
-            recorder.prepare()
+            recorder?.prepare()
         } catch (e: IOException) {
-            Log.e(LOG_TAG, "prepare() failed")
+            Log.e("AudioRecorder", "prepare() failed")
         }
         // レコーダーの開始
-        recorder.start()
+        recorder?.start()
     }
 
-    private fun stopRecording() {
+    fun stopRecording() {
         // レコーダーの停止
-        recorder.stop()
+        recorder?.stop()
         // MediaRecorderインスタンスの使用を終えたらできるだけ早くリソースを解放する
-        recorder.release()
+        recorder?.release()
     }
 
-    override fun onStop() {
-        super.onStop()
-        recorder.release()
-    }
-
-    companion object {
-        private const val LOG_TAG = "RecordFragment"
+    fun releaseRecorder() {
+        recorder?.release()
     }
 }

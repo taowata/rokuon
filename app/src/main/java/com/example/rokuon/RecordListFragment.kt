@@ -55,6 +55,7 @@ class RecordListFragment : Fragment() {
                 filePath = filePath,
                 recordOrder = order + 1
             )
+            viewModel.insertRecord(newRecord)
             viewModel.newRecord = newRecord
             findNavController().navigate(R.id.action_recordListFragment_to_recordFragment)
         }
