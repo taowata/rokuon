@@ -14,7 +14,7 @@ class NewRecordDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            number = it.getString(NUMBER)
+            number = it.getString(RECORD_NUMBER)
         }
     }
 
@@ -43,11 +43,11 @@ class NewRecordDialogFragment : DialogFragment() {
 
     companion object {
 
-        private const val NUMBER = "number"
+        private const val RECORD_NUMBER = "number"
 
         fun newInstance(order: Int) = NewRecordDialogFragment().apply {
             arguments = Bundle().apply {
-                putString(NUMBER, order.toString())
+                putString(RECORD_NUMBER, order.toString())
             }
         }
     }
