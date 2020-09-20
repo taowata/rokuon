@@ -24,12 +24,12 @@ class RecordListFragment : Fragment() {
         // RecyclerViewのセットアップ
         val recyclerView = binding.recordList
         recyclerView.layoutManager = LinearLayoutManager(this.context)
-        val adapter = RecordListAdapter(
-        ClickEvent {
+        val onItemClick: (Record) -> Unit = {
             val arg = it.filePath
             val action = RecordListFragmentDirections.actionRecordListFragmentToPlayFragment(arg)
             findNavController().navigate(action)
-        })
+        }
+        val adapter = RecordListAdapter(onItemClick)
         recyclerView.adapter = adapter
 
         val dirPath = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}"
