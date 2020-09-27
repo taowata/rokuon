@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_recordFragment_to_recordListFragment"
             app:destination="@id/recordListFragment" />
+        <argument
+            android:name="recordId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/playFragment"

@@ -1,25 +1,15 @@
 package com.example.rokuon
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class RecordListViewModel(
     private val recordDao: RecordDao
 ) : ViewModel() {
 
     val recordList: LiveData<List<Record>> = recordDao.allRecord()
-    val largestOrder: LiveData<Int> = recordDao.getLargestOrder()
 
-    var newRecord: Record = Record()
-
-    fun insertRecord(record: Record) = viewModelScope.launch(Dispatchers.IO) {
-        recordDao.insert(record)
+    fun insertNewRecord(record: Record): Long {
+        return recordDao.insert(record)
     }
-
-
 }

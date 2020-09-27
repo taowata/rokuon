@@ -7,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rokuon.databinding.FragmentRecordListBinding
-import com.example.rokuon.databinding.RecordListItemBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RecordListFragment : Fragment() {
 
@@ -25,14 +27,12 @@ class RecordListFragment : Fragment() {
         val recyclerView = binding.recordList
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         val onItemClick: (Record) -> Unit = {
-            val arg = it.filePath
+            val arg = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}/${it.recordId}"
             val action = RecordListFragmentDirections.actionRecordListFragmentToPlayFragment(arg)
             findNavController().navigate(action)
         }
         val adapter = RecordListAdapter(onItemClick)
         recyclerView.adapter = adapter
-
-        val dirPath = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}"
 
         // viewModelの初期化
         val activity = requireActivity()
@@ -48,16 +48,15 @@ class RecordListFragment : Fragment() {
         val fab = binding.fab
         val recordName = binding.editTextRecordName
         fab.setOnClickListener {
-            val order = viewModel.largestOrder.value ?: 0
-            val filePath = dirPath + "$order"
-            val newRecord = Record(
-                name = recordName.text.toString(),
-                filePath = filePath,
-                recordOrder = order + 1
-            )
-            viewModel.insertRecord(newRecord)
-            viewModel.newRecord = newRecord
-            findNavController().navigate(R.id.action_recordListFragment_to_recordFragment)
+            val newRecord = Record(name = recordName.text.toString())
+            // recordIdを取得してから画面遷移する
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                val recordId: Long = withContext(Dispatchers.IO) {
+                    viewModel.insertNewRecord(newRecord)
+                }
+                val action = RecordListFragmentDirections.actionRecordListFragmentToRecordFragment(recordId)
+                findNavController().navigate(action)
+            }
         }
 
         return binding.root

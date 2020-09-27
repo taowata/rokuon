@@ -1,6 +1,5 @@
 package com.example.rokuon
 
-import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.Environment
@@ -9,20 +8,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.navArgs
 import com.example.rokuon.databinding.FragmentRecordBinding
 import java.io.IOException
 
 class RecordFragment : Fragment() {
+    private val args: RecordFragmentArgs by navArgs()
 
     private var filePath: String = ""
-
-    private lateinit var newRecord: Record
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,13 +29,12 @@ class RecordFragment : Fragment() {
         val audioRecorder = AudioRecorder()
         val recordViewModelFactory =  RecordViewModelFactory(audioRecorder)
         val recordViewModel: RecordViewModel by viewModels { recordViewModelFactory }
-        val recordListViewModel: RecordListViewModel by activityViewModels()
 
-        newRecord = recordListViewModel.newRecord
-        filePath = newRecord.filePath
+        val newRecordId = args.recordId
 
         val recordButton = binding.recordButton
         recordButton.setOnClickListener {
+            filePath = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}/${newRecordId}"
             recordViewModel.onClickRecordButton(filePath)
         }
 
