@@ -14,12 +14,16 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     buildFeatures {
         dataBinding = true
@@ -73,5 +77,8 @@ dependencies {
     // ExoPlayer
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer_version"
+
+    // Multi Dex
+    implementation 'com.android.support:multidex:1.0.3'
 
 }
