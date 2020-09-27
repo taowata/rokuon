@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rokuon.databinding.FragmentRecordListBinding
+import com.linecorp.lich.component.getComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,8 +36,8 @@ class RecordListFragment : Fragment() {
         recyclerView.adapter = adapter
 
         // viewModelの初期化
-        val activity = requireActivity()
-        val dataSource = RecordDatabase.getInstance(activity.application).recordDao
+        val context = requireContext()
+        val dataSource = context.getComponent(RecordDatabase).recordDao
         val viewModelFactory = RecordListViewModelFactory(dataSource)
         val viewModel: RecordListViewModel by activityViewModels { viewModelFactory }
 

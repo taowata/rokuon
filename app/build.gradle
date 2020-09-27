@@ -81,4 +81,6 @@ dependencies {
     // Multi Dex
     implementation 'com.android.support:multidex:1.0.3'
 
+    // Lich Component
+    implementation 'com.linecorp.lich:component:2.2.0'
 }
