@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 
 class PlayViewModel: ViewModel() {
 
-    private var _playingState: MutableLiveData<PlayingState> = MutableLiveData(PlayingState.NOT_PLAYING)
+    private val _playingState: MutableLiveData<PlayingState> = MutableLiveData(PlayingState.NOT_PLAYING)
     val playingState: LiveData<PlayingState> = _playingState
 
     private var _playingTag: MutableLiveData<String> = MutableLiveData("再生開始")

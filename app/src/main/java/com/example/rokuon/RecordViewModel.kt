@@ -9,11 +9,11 @@ class RecordViewModel(
     private val audioRecorder: AudioRecorder
 ) : ViewModel() {
 
-    private var _recordingState: MutableLiveData<RecordingState> =
+    private val _recordingState: MutableLiveData<RecordingState> =
         MutableLiveData(RecordingState.NOT_RECORDING)
     val recordingState: LiveData<RecordingState> = _recordingState
 
-    private var _recordingTag: MutableLiveData<String> = MutableLiveData("録音開始")
+    private val _recordingTag: MutableLiveData<String> = MutableLiveData("録音開始")
     val recordingTag: LiveData<String>
         get() = _recordingTag
 
