@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.example.rokuon.databinding.FragmentPlayBinding
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.PlayerView
 import java.io.IOException
 
 class PlayFragment : Fragment() {
@@ -17,6 +19,8 @@ class PlayFragment : Fragment() {
 
     private  lateinit var player: MediaPlayer
     private lateinit var filePath: String
+    private lateinit var playerView: PlayerView
+    private var mediaPlayer: SimpleExoPlayer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +30,9 @@ class PlayFragment : Fragment() {
 
         val binding = FragmentPlayBinding.inflate(layoutInflater, container, false)
         val viewModel: PlayViewModel by viewModels()
+
+        playerView = binding.playerView
+        initPlayer()
 
         val playButton = binding.playButton
         viewModel.playingState.observe(viewLifecycleOwner) { playingState ->
@@ -56,5 +63,12 @@ class PlayFragment : Fragment() {
     private fun stopPlaying() {
         player.release()
     }
+
+    private fun initPlayer() {
+        val context = requireContext()
+        mediaPlayer = SimpleExoPlayer.Builder(context).build()
+        playerView.player = mediaPlayer
+    }
+
 
 }
