@@ -1,7 +1,6 @@
 package com.example.rokuon
 
 import android.os.Bundle
-import android.os.Environment
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +27,8 @@ class RecordListFragment : Fragment() {
         val recyclerView = binding.recordList
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         val onItemClick: (Record) -> Unit = {
-            val arg = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}/${it.recordId}"
+            val context = requireContext()
+            val arg = Constants.dirPath(context) + "/${it.recordId}"
             val action = RecordListFragmentDirections.actionRecordListFragmentToPlayFragment(arg)
             findNavController().navigate(action)
         }
