@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.rokuon.databinding.RecordListItemBinding
 
 class RecordListAdapter(
-    private val onItemClick: (Record) -> Unit
+    private val itemClickAction: (Record) -> Unit
 ) : RecyclerView.Adapter<RecordListAdapter.RecordViewHolder>() {
 
     private var records: List<Record> = mutableListOf(Record())
@@ -35,7 +35,7 @@ class RecordListAdapter(
 
     override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
         val current = records[position]
-        holder.bind(current, onItemClick)
+        holder.bind(current, itemClickAction)
     }
 
     override fun getItemCount(): Int = records.size
