@@ -9,12 +9,8 @@ import androidx.room.Query
 @Dao
 interface RecordDao {
     @Insert
-    fun insert(record: Record)
+    suspend fun insert(record: Record): Long
 
     @Query("select * from record_table")
     fun allRecord(): LiveData<List<Record>>
-
-    // record_orderの最大値を取得
-    @Query("select max(record_order) from record_table")
-    fun getLargestOrder(): LiveData<Int>
 }

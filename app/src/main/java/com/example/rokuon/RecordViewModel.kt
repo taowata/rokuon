@@ -4,32 +4,38 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class RecordViewModel: ViewModel() {
+class RecordViewModel(
+    private val audioRecorder: AudioRecorder
+) : ViewModel() {
 
-    private var _recordingState: MutableLiveData<RecordingState> = MutableLiveData(RecordingState.NOT_RECORDING)
+    private val _recordingState: MutableLiveData<RecordingState> =
+        MutableLiveData(RecordingState.NOT_RECORDING)
     val recordingState: LiveData<RecordingState> = _recordingState
 
-    private var _recordingTag: MutableLiveData<String> = MutableLiveData("録音開始")
+    private val _recordingTag: MutableLiveData<String> = MutableLiveData("録音開始")
     val recordingTag: LiveData<String>
         get() = _recordingTag
 
     @MainThread
-    fun onClickRecordButton() {
+    fun onClickRecordButton(filePath: String) {
         when (recordingState.value) {
             RecordingState.NOT_RECORDING -> {
-                _recordingTag.value = "録音停止"
+                audioRecorder.startRecording(filePath)
                 _recordingState.value = RecordingState.RECORDING
+                _recordingTag.value = "録音停止"
             }
             RecordingState.RECORDING -> {
-                _recordingTag.value = "録音開始"
+                audioRecorder.stopRecording()
                 _recordingState.value = RecordingState.NOT_RECORDING
+                _recordingTag.value = "録音開始"
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        audioRecorder.releaseRecorder()
     }
 }
 

@@ -1,20 +1,23 @@
 package com.example.rokuon
 
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rokuon.databinding.FragmentRecordListBinding
-import com.example.rokuon.databinding.RecordListItemBinding
+import com.linecorp.lich.component.getComponent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RecordListFragment : Fragment() {
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,19 +27,18 @@ class RecordListFragment : Fragment() {
         // RecyclerViewのセットアップ
         val recyclerView = binding.recordList
         recyclerView.layoutManager = LinearLayoutManager(this.context)
-        val adapter = RecordListAdapter(
-        ClickEvent {
-            val arg = it.filePath
-            val action = RecordListFragmentDirections.actionRecordListFragmentToPlayFragment(arg)
+        val onItemClick: (Record) -> Unit = {
+            val context = requireContext()
+            val newRecordFile = RecordFileManager.getRecordFile(context, it.recordId) ?: error("RecordFile is missing")
+            val action = RecordListFragmentDirections.actionRecordListFragmentToPlayFragment(newRecordFile.absolutePath)
             findNavController().navigate(action)
-        })
+        }
+        val adapter = RecordListAdapter(onItemClick)
         recyclerView.adapter = adapter
 
-        val dirPath = "${context?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath}"
-
         // viewModelの初期化
-        val activity = requireActivity()
-        val dataSource = RecordDatabase.getInstance(activity.application).recordDao
+        val context = requireContext()
+        val dataSource = context.getComponent(RecordDatabase).recordDao
         val viewModelFactory = RecordListViewModelFactory(dataSource)
         val viewModel: RecordListViewModel by activityViewModels { viewModelFactory }
 
@@ -48,15 +50,13 @@ class RecordListFragment : Fragment() {
         val fab = binding.fab
         val recordName = binding.editTextRecordName
         fab.setOnClickListener {
-            val order = viewModel.largestOrder.value ?: 0
-            val filePath = dirPath + "$order"
-            val newRecord = Record(
-                name = recordName.text.toString(),
-                filePath = filePath,
-                recordOrder = order + 1
-            )
-            viewModel.newRecord = newRecord
-            findNavController().navigate(R.id.action_recordListFragment_to_recordFragment)
+            val newRecord = Record(name = recordName.text.toString())
+            // recordIdを取得してから画面遷移する
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                val recordId: Long = viewModel.insertNewRecord(newRecord)
+                val action = RecordListFragmentDirections.actionRecordListFragmentToRecordFragment(recordId)
+                findNavController().navigate(action)
+            }
         }
 
         return binding.root

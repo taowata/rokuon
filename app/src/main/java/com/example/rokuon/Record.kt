@@ -1,20 +1,16 @@
 package com.example.rokuon
 
-import android.content.Context
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Entity(tableName = "record_table")
-data class Record(
+data class Record constructor(
     @ColumnInfo(name = "name") var name: String = "",
-    @ColumnInfo(name = "file_path") var filePath: String = "",
-    @ColumnInfo(name = "record_date") var recordDate: Date = Date(),
-    @ColumnInfo(name = "record_order") var recordOrder: Int = 0,
-    @PrimaryKey(autoGenerate = true) val recordId: Int = 0
+    @ColumnInfo(name = "record_date") var recordDate: LocalDateTime = LocalDateTime.now(),
+    @PrimaryKey(autoGenerate = true) val recordId: Long = 0
 )

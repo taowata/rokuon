@@ -8,15 +8,15 @@
             name="record"
             type="com.example.rokuon.Record" />
         <variable
-            name="clickEvent"
-            type="com.example.rokuon.ClickEvent" />
+            name="onItemClick"
+            type="kotlin.jvm.functions.Function1" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() -> clickEvent.goToPlayFragment(record)}">
+        android:onClick="@{() -> onItemClick.invoke(record)}">
 
         <TextView
             android:id="@+id/record_name"
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@{record.recordDate.toString()}"
+            android:text="@{record.recordDate}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

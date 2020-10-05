@@ -10,16 +10,20 @@ android {
 
     defaultConfig {
         applicationId "com.example.rokuon"
-        minSdkVersion 19
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     buildFeatures {
         dataBinding = true
@@ -70,4 +74,13 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
+    // ExoPlayer
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer_version"
+
+    // Multi Dex
+    implementation 'com.android.support:multidex:1.0.3'
+
+    // Lich Component
+    implementation 'com.linecorp.lich:component:2.2.0'
 }

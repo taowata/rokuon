@@ -1,20 +1,23 @@
 package com.example.rokuon
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rokuon.databinding.RecordListItemBinding
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RecordListAdapter(
-    private val clickEvent: ClickEvent
+    private val itemClickAction: (Record) -> Unit
 ) : RecyclerView.Adapter<RecordListAdapter.RecordViewHolder>() {
 
     private var records: List<Record> = mutableListOf(Record())
 
     class RecordViewHolder(private val binding: RecordListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Record, clickEvent: ClickEvent) {
+        fun bind(item: Record, onItemClick: (Record) -> Unit) {
             binding.record = item
-            binding.clickEvent = clickEvent
+            binding.onItemClick = onItemClick
             binding.executePendingBindings()
         }
         companion object {
@@ -35,7 +38,7 @@ class RecordListAdapter(
 
     override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
         val current = records[position]
-        holder.bind(current, clickEvent)
+        holder.bind(current, itemClickAction)
     }
 
     override fun getItemCount(): Int = records.size
@@ -45,8 +48,4 @@ class RecordListAdapter(
         notifyDataSetChanged()
     }
 
-}
-
-class ClickEvent(val onClickListener: (record: Record) -> Unit) {
-    fun goToPlayFragment(record: Record) = onClickListener(record)
 }

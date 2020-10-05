@@ -5,32 +5,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.linecorp.lich.component.ComponentFactory
 
 @Database(entities = [Record::class], version = 1, exportSchema = false)
-@TypeConverters(DateConverters::class)
+@TypeConverters(LocalDateTimeConverters::class)
 abstract class RecordDatabase : RoomDatabase() {
+
     abstract val recordDao: RecordDao
 
-    companion object {
-
-        @Volatile
-        private var INSTANCE: RecordDatabase? = null
-
-        fun getInstance(context: Context): RecordDatabase {
-            var instance = INSTANCE
-
-            // インスタンス化されていない場合にビルダーを起動
-            if (instance == null) {
-                instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    RecordDatabase::class.java,
-                    "record_database"
-                )
-                    .fallbackToDestructiveMigration()
-                    .build()
-                INSTANCE = instance
-            }
-            return instance
-        }
+    companion object : ComponentFactory<RecordDatabase>() {
+        override fun createComponent(context: Context): RecordDatabase =
+            Room.databaseBuilder(context, RecordDatabase::class.java, "record_db").build()
     }
 }
