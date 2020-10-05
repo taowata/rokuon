@@ -9,7 +9,7 @@ class RecordListViewModel(
 
     val recordList: LiveData<List<Record>> = recordDao.allRecord()
 
-    fun insertNewRecord(record: Record): Long {
+    suspend fun insertNewRecord(record: Record): Long {
         return recordDao.insert(record)
     }
 }
