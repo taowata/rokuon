@@ -52,9 +52,7 @@ class RecordListFragment : Fragment() {
             val newRecord = Record(name = recordName.text.toString())
             // recordIdを取得してから画面遷移する
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                val recordId: Long = withContext(Dispatchers.IO) {
-                    viewModel.insertNewRecord(newRecord)
-                }
+                val recordId: Long = viewModel.insertNewRecord(newRecord)
                 val action = RecordListFragmentDirections.actionRecordListFragmentToRecordFragment(recordId)
                 findNavController().navigate(action)
             }

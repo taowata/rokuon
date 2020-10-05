@@ -9,7 +9,7 @@ import androidx.room.Query
 @Dao
 interface RecordDao {
     @Insert
-    fun insert(record: Record): Long
+    suspend fun insert(record: Record): Long
 
     @Query("select * from record_table")
     fun allRecord(): LiveData<List<Record>>
