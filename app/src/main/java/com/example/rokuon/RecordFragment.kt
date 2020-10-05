@@ -26,10 +26,10 @@ class RecordFragment : Fragment() {
 
         val newRecordId = args.recordId
         val context = requireContext()
-        val filePath = Constants.dirPath(context) + "/$newRecordId"
+        val recordFile = RecordFileManager.getRecordFile(context, newRecordId) ?: error("RecordFile is missing")
         val recordButton = binding.recordButton
         recordButton.setOnClickListener {
-            recordViewModel.onClickRecordButton(filePath)
+            recordViewModel.onClickRecordButton(recordFile.absolutePath)
         }
 
         recordViewModel.recordingTag.observe(viewLifecycleOwner) {

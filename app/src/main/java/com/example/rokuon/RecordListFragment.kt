@@ -28,8 +28,8 @@ class RecordListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         val onItemClick: (Record) -> Unit = {
             val context = requireContext()
-            val arg = Constants.dirPath(context) + "/${it.recordId}"
-            val action = RecordListFragmentDirections.actionRecordListFragmentToPlayFragment(arg)
+            val newRecordFile = RecordFileManager.getRecordFile(context, it.recordId) ?: error("RecordFile is missing")
+            val action = RecordListFragmentDirections.actionRecordListFragmentToPlayFragment(newRecordFile.absolutePath)
             findNavController().navigate(action)
         }
         val adapter = RecordListAdapter(onItemClick)
