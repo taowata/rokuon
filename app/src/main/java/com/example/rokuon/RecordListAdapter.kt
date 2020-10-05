@@ -1,10 +1,13 @@
 package com.example.rokuon
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rokuon.databinding.RecordListItemBinding
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RecordListAdapter(
     private val itemClickAction: (Record) -> Unit
 ) : RecyclerView.Adapter<RecordListAdapter.RecordViewHolder>() {

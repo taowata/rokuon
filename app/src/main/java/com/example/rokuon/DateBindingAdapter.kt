@@ -1,12 +1,15 @@
 package com.example.rokuon
 
+import android.os.Build
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.databinding.BindingAdapter
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @BindingAdapter(value = ["android:text"], requireAll = false)
-fun setDateAsText(textView: TextView, date: Date) {
-    val df = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.JAPAN)
-    textView.text = df.format(date)
+fun setLocalDateTimeAsText(textView: TextView, localDateTime: LocalDateTime) {
+    val dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
+    textView.text = dtf.format(localDateTime)
 }

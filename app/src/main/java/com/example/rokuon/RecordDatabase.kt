@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.linecorp.lich.component.ComponentFactory
 
 @Database(entities = [Record::class], version = 1, exportSchema = false)
-@TypeConverters(DateConverters::class)
+@TypeConverters(LocalDateTimeConverters::class)
 abstract class RecordDatabase : RoomDatabase() {
 
     abstract val recordDao: RecordDao
