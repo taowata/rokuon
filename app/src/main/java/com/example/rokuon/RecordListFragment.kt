@@ -45,10 +45,9 @@ class RecordListFragment : Fragment() {
         }
 
         val fab = binding.fab
-        val recordName = binding.editTextRecordName
         fab.setOnClickListener {
-            val newRecord = Record(name = recordName.text.toString())
-            // recordIdを取得してから画面遷移する
+            val newRecord = Record()
+            // RecordをDBに追加し、recordIdを取得してから画面遷移する
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 val recordId: Long = viewModel.insertNewRecord(newRecord)
                 val action = RecordListFragmentDirections.actionRecordListFragmentToRecordFragment(recordId)

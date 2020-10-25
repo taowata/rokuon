@@ -6,9 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.rokuon.databinding.FragmentRecordBinding
+import com.linecorp.lich.component.getComponent
+import kotlinx.coroutines.launch
 
 class RecordFragment : Fragment() {
     private val args: RecordFragmentArgs by navArgs()
@@ -21,11 +24,16 @@ class RecordFragment : Fragment() {
 
         // viewModelの初期化
         val audioRecorder = AudioRecorder()
-        val recordViewModelFactory =  RecordViewModelFactory(audioRecorder)
+        val context = requireContext()
+        val dataSource = context.getComponent(RecordDatabase).recordDao
+        val recordViewModelFactory =  RecordViewModelFactory(audioRecorder, dataSource)
         val recordViewModel: RecordViewModel by viewModels { recordViewModelFactory }
 
         val newRecordId = args.recordId
-        val context = requireContext()
+        viewLifecycleOwner.lifecycleScope.launch {
+            recordViewModel.updateRecord(newRecordId)
+        }
+
         val recordFile = RecordFileManager.getRecordFile(context, newRecordId) ?: error("RecordFile is missing")
         val recordButton = binding.recordButton
         recordButton.setOnClickListener {
