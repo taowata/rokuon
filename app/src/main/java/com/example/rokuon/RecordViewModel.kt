@@ -34,6 +34,14 @@ class RecordViewModel(
         }
     }
 
+    fun onClickPauseButton() {
+        audioRecorder.pauseRecording()
+    }
+
+    fun onClickResumeButton() {
+        audioRecorder.resumeRecording()
+    }
+
     suspend fun updateRecord(recordId: Long) {
         val recordName = "録音$recordId"
         val record = recordDao.getRecordById(recordId)

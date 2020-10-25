@@ -35,7 +35,17 @@ class AudioRecorder {
         recorder?.release()
     }
 
+    fun pauseRecording() {
+        recorder?.pause()
+    }
+
+    fun resumeRecording() {
+        recorder?.resume()
+    }
+
     fun releaseRecorder() {
         recorder?.release()
     }
+
+
 }
