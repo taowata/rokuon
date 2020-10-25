@@ -40,6 +40,16 @@ class RecordFragment : Fragment() {
             recordViewModel.onClickRecordButton(recordFile.absolutePath)
         }
 
+        val pauseButton = binding.pauseButton
+        pauseButton.setOnClickListener {
+            recordViewModel.onClickPauseButton()
+        }
+
+        val resumeButton = binding.resumeButton
+        resumeButton.setOnClickListener {
+            recordViewModel.onClickResumeButton()
+        }
+
         recordViewModel.recordingTag.observe(viewLifecycleOwner) {
             recordButton.text = it
         }
