@@ -6,7 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class RecordViewModel(
-    private val audioRecorder: AudioRecorder
+    private val audioRecorder: AudioRecorder,
+    private val recordDao: RecordDao
 ) : ViewModel() {
 
     private val _recordingState: MutableLiveData<RecordingState> =
@@ -31,6 +32,13 @@ class RecordViewModel(
                 _recordingTag.value = "録音開始"
             }
         }
+    }
+
+    suspend fun updateRecord(recordId: Long) {
+        val recordName = "録音$recordId"
+        val record = recordDao.getRecordById(recordId)
+        record.name = recordName
+        recordDao.update(record)
     }
 
     override fun onCleared() {
