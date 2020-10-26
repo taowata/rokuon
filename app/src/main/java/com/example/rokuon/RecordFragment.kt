@@ -35,29 +35,40 @@ class RecordFragment : Fragment() {
         }
 
         val recordFile = RecordFileManager.getRecordFile(context, newRecordId) ?: error("RecordFile is missing")
-        val recordButton = binding.recordButton
-        recordButton.setOnClickListener {
-            recordViewModel.onClickRecordButton(recordFile.absolutePath)
+
+        val startButton = binding.startRecordButton
+        recordViewModel.startButtonVisibility.observe(viewLifecycleOwner) {
+            startButton.visibility = it
+        }
+        startButton.setOnClickListener {
+            recordViewModel.startRecording(recordFile.absolutePath)
         }
 
         val pauseButton = binding.pauseButton
+        recordViewModel.pauseButtonVisibility.observe(viewLifecycleOwner) {
+            pauseButton.visibility = it
+        }
         pauseButton.setOnClickListener {
-            recordViewModel.onClickPauseButton()
+            recordViewModel.pauseRecording()
         }
 
         val resumeButton = binding.resumeButton
+        recordViewModel.resumeButtonVisibility.observe(viewLifecycleOwner) {
+            resumeButton.visibility = it
+        }
         resumeButton.setOnClickListener {
-            recordViewModel.onClickResumeButton()
+            recordViewModel.resumeRecording()
         }
 
-        recordViewModel.recordingTag.observe(viewLifecycleOwner) {
-            recordButton.text = it
+        val finishButton = binding.finishButton
+        recordViewModel.finishButtonVisibility.observe(viewLifecycleOwner) {
+            finishButton.visibility = it
         }
-
-        val backToHomeButton = binding.backButton
-        backToHomeButton.setOnClickListener {
+        finishButton.setOnClickListener {
+            recordViewModel.finishRecording()
             findNavController().navigate(R.id.action_recordFragment_to_recordListFragment)
         }
+
         return binding.root
     }
 }

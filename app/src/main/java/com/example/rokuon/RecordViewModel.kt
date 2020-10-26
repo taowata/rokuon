@@ -1,5 +1,6 @@
 package com.example.rokuon
 
+import android.view.View
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,36 +11,44 @@ class RecordViewModel(
     private val recordDao: RecordDao
 ) : ViewModel() {
 
-    private val _recordingState: MutableLiveData<RecordingState> =
-        MutableLiveData(RecordingState.NOT_RECORDING)
-    val recordingState: LiveData<RecordingState> = _recordingState
+    private val _startButtonVisibility: MutableLiveData<Int> = MutableLiveData(View.VISIBLE)
+    val startButtonVisibility: LiveData<Int> = _startButtonVisibility
 
-    private val _recordingTag: MutableLiveData<String> = MutableLiveData("録音開始")
-    val recordingTag: LiveData<String>
-        get() = _recordingTag
+    private val _pauseButtonVisibility: MutableLiveData<Int> = MutableLiveData(View.GONE)
+    val pauseButtonVisibility: LiveData<Int> = _pauseButtonVisibility
+
+    private val _resumeButtonVisibility: MutableLiveData<Int> = MutableLiveData(View.GONE)
+    val resumeButtonVisibility: LiveData<Int> = _resumeButtonVisibility
+
+    private val _finishButtonVisibility: MutableLiveData<Int> = MutableLiveData(View.GONE)
+    val finishButtonVisibility: LiveData<Int> = _finishButtonVisibility
 
     @MainThread
-    fun onClickRecordButton(filePath: String) {
-        when (recordingState.value) {
-            RecordingState.NOT_RECORDING -> {
-                audioRecorder.startRecording(filePath)
-                _recordingState.value = RecordingState.RECORDING
-                _recordingTag.value = "録音停止"
-            }
-            RecordingState.RECORDING -> {
-                audioRecorder.stopRecording()
-                _recordingState.value = RecordingState.NOT_RECORDING
-                _recordingTag.value = "録音開始"
-            }
-        }
+    fun startRecording(filePath: String) {
+        audioRecorder.startRecording(filePath)
+        _startButtonVisibility.value = View.GONE
+        _pauseButtonVisibility.value = View.VISIBLE
     }
 
-    fun onClickPauseButton() {
+    @MainThread
+    fun pauseRecording() {
         audioRecorder.pauseRecording()
+        _pauseButtonVisibility.value = View.GONE
+        _resumeButtonVisibility.value = View.VISIBLE
+        _finishButtonVisibility.value = View.VISIBLE
     }
 
-    fun onClickResumeButton() {
+    @MainThread
+    fun resumeRecording() {
         audioRecorder.resumeRecording()
+        _resumeButtonVisibility.value = View.GONE
+        _finishButtonVisibility.value = View.GONE
+        _pauseButtonVisibility.value = View.VISIBLE
+    }
+
+    @MainThread
+    fun finishRecording() {
+        audioRecorder.stopRecording()
     }
 
     suspend fun updateRecord(recordId: Long) {
@@ -53,8 +62,4 @@ class RecordViewModel(
         super.onCleared()
         audioRecorder.releaseRecorder()
     }
-}
-
-enum class RecordingState {
-    RECORDING, NOT_RECORDING
 }
