@@ -69,6 +69,11 @@ class RecordFragment : Fragment() {
             findNavController().navigate(R.id.action_recordFragment_to_recordListFragment)
         }
 
+        val progressBar = binding.recordingBar
+        recordViewModel.recordingBarVisibility.observe(viewLifecycleOwner) {
+            progressBar.visibility = it
+        }
+
         return binding.root
     }
 }

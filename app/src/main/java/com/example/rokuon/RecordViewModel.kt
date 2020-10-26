@@ -23,11 +23,15 @@ class RecordViewModel(
     private val _finishButtonVisibility: MutableLiveData<Int> = MutableLiveData(View.GONE)
     val finishButtonVisibility: LiveData<Int> = _finishButtonVisibility
 
+    private val _recordingBarVisibility: MutableLiveData<Int> = MutableLiveData(View.INVISIBLE)
+    val recordingBarVisibility: LiveData<Int> = _recordingBarVisibility
+
     @MainThread
     fun startRecording(filePath: String) {
         audioRecorder.startRecording(filePath)
         _startButtonVisibility.value = View.GONE
         _pauseButtonVisibility.value = View.VISIBLE
+        _recordingBarVisibility.value = View.VISIBLE
     }
 
     @MainThread
@@ -36,6 +40,7 @@ class RecordViewModel(
         _pauseButtonVisibility.value = View.GONE
         _resumeButtonVisibility.value = View.VISIBLE
         _finishButtonVisibility.value = View.VISIBLE
+        _recordingBarVisibility.value = View.INVISIBLE
     }
 
     @MainThread
@@ -44,6 +49,7 @@ class RecordViewModel(
         _resumeButtonVisibility.value = View.GONE
         _finishButtonVisibility.value = View.GONE
         _pauseButtonVisibility.value = View.VISIBLE
+        _recordingBarVisibility.value = View.VISIBLE
     }
 
     @MainThread
