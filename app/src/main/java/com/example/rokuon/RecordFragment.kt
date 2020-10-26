@@ -74,6 +74,11 @@ class RecordFragment : Fragment() {
             progressBar.visibility = it
         }
 
+        val timeText = binding.timeText
+        recordViewModel.recordingTime.observe(viewLifecycleOwner) {
+            timeText.text = it.toString()
+        }
+
         return binding.root
     }
 }
