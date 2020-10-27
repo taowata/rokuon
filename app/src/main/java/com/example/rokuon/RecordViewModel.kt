@@ -65,7 +65,7 @@ class RecordViewModel(
         audioRecorder.stopRecording()
     }
 
-    suspend fun updateRecord(recordId: Long) {
+    suspend fun updateRecordName(recordId: Long) {
         val recordName = "録音$recordId"
         val record = recordDao.getRecordById(recordId)
         record.name = recordName
@@ -86,5 +86,6 @@ class RecordViewModel(
     override fun onCleared() {
         super.onCleared()
         audioRecorder.releaseRecorder()
+
     }
 }

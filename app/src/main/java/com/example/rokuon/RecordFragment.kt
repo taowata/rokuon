@@ -30,8 +30,9 @@ class RecordFragment : Fragment() {
         val recordViewModel: RecordViewModel by viewModels { recordViewModelFactory }
 
         val newRecordId = args.recordId
+        // IDを使って録音ファイル名をつける
         viewLifecycleOwner.lifecycleScope.launch {
-            recordViewModel.updateRecord(newRecordId)
+            recordViewModel.updateRecordName(newRecordId)
         }
 
         val recordFile = RecordFileManager.getRecordFile(context, newRecordId) ?: error("RecordFile is missing")
