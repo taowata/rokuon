@@ -80,6 +80,7 @@ class RecordViewModel(
         val duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
         val recordTime = duration?.toLong()?.div(1000L)
         record.time = recordTime ?: 0
+        recordDao.update(record)
     }
 
     @MainThread
