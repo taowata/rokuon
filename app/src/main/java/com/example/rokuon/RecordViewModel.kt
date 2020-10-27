@@ -5,6 +5,9 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class RecordViewModel(
     private val audioRecorder: AudioRecorder,
@@ -26,12 +29,16 @@ class RecordViewModel(
     private val _recordingBarVisibility: MutableLiveData<Int> = MutableLiveData(View.INVISIBLE)
     val recordingBarVisibility: LiveData<Int> = _recordingBarVisibility
 
+    private val _recordingTime: MutableLiveData<Long> = MutableLiveData(0L)
+    val recordingTime: LiveData<Long> = _recordingTime
+
     @MainThread
     fun startRecording(filePath: String) {
         audioRecorder.startRecording(filePath)
         _startButtonVisibility.value = View.GONE
         _pauseButtonVisibility.value = View.VISIBLE
         _recordingBarVisibility.value = View.VISIBLE
+        startTimer()
     }
 
     @MainThread
@@ -50,6 +57,7 @@ class RecordViewModel(
         _finishButtonVisibility.value = View.GONE
         _pauseButtonVisibility.value = View.VISIBLE
         _recordingBarVisibility.value = View.VISIBLE
+        startTimer()
     }
 
     @MainThread
@@ -62,6 +70,17 @@ class RecordViewModel(
         val record = recordDao.getRecordById(recordId)
         record.name = recordName
         recordDao.update(record)
+    }
+
+    @MainThread
+    private fun startTimer() {
+        viewModelScope.launch {
+            delay(1000)
+            while(recordingBarVisibility.value == View.VISIBLE) {
+                _recordingTime.value = _recordingTime.value?.plus(1L)
+                delay(1000)
+            }
+        }
     }
 
     override fun onCleared() {
