@@ -30,8 +30,9 @@ class RecordFragment : Fragment() {
         val recordViewModel: RecordViewModel by viewModels { recordViewModelFactory }
 
         val newRecordId = args.recordId
+        // IDを使って録音ファイル名をつける
         viewLifecycleOwner.lifecycleScope.launch {
-            recordViewModel.updateRecord(newRecordId)
+            recordViewModel.updateRecordName(newRecordId)
         }
 
         val recordFile = RecordFileManager.getRecordFile(context, newRecordId) ?: error("RecordFile is missing")
@@ -65,6 +66,10 @@ class RecordFragment : Fragment() {
             finishButton.visibility = it
         }
         finishButton.setOnClickListener {
+            // 録音時間を保存する
+            viewLifecycleOwner.lifecycleScope.launch {
+                recordViewModel.updateRecordTime(newRecordId, recordFile.absolutePath)
+            }
             recordViewModel.finishRecording()
             findNavController().navigate(R.id.action_recordFragment_to_recordListFragment)
         }
