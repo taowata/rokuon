@@ -66,6 +66,10 @@ class RecordFragment : Fragment() {
             finishButton.visibility = it
         }
         finishButton.setOnClickListener {
+            // 録音時間を保存する
+            viewLifecycleOwner.lifecycleScope.launch {
+                recordViewModel.updateRecordTime(newRecordId, recordFile.absolutePath)
+            }
             recordViewModel.finishRecording()
             findNavController().navigate(R.id.action_recordFragment_to_recordListFragment)
         }

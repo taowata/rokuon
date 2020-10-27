@@ -1,5 +1,6 @@
 package com.example.rokuon
 
+import android.media.MediaMetadataRetriever
 import android.view.View
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
@@ -72,6 +73,15 @@ class RecordViewModel(
         recordDao.update(record)
     }
 
+    suspend fun updateRecordTime(recordId: Long, filePath: String) {
+        val record = recordDao.getRecordById(recordId)
+        val mmr = MediaMetadataRetriever()
+        mmr.setDataSource(filePath)
+        val duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        val recordTime = duration?.toLong()?.div(1000L)
+        record.time = recordTime ?: 0
+    }
+
     @MainThread
     private fun startTimer() {
         viewModelScope.launch {
@@ -86,6 +96,5 @@ class RecordViewModel(
     override fun onCleared() {
         super.onCleared()
         audioRecorder.releaseRecorder()
-
     }
 }
