@@ -83,4 +83,7 @@ dependencies {
 
     // Lich Component
     implementation 'com.linecorp.lich:component:2.2.0'
+
+    // CardView
+    implementation 'androidx.cardview:cardview:1.0.0'
 }
