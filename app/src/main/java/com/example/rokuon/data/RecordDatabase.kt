@@ -1,4 +1,4 @@
-package com.example.rokuon
+package com.example.rokuon.data
 
 import android.content.Context
 import androidx.room.Database

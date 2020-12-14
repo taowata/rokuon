@@ -1,4 +1,4 @@
-package com.example.rokuon
+package com.example.rokuon.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
