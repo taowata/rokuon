@@ -10,8 +10,3 @@ fun setLocalDateTimeAsText(textView: TextView, localDateTime: LocalDateTime) {
     val dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
     textView.text = dtf.format(localDateTime)
 }
-
-@BindingAdapter(value = ["android:text"], requireAll = false)
-fun setLongAsText(textView: TextView, recordTime: Long) {
-    textView.text = recordTime.toString()
-}

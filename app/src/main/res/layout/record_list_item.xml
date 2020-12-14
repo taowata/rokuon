@@ -7,7 +7,7 @@
 
         <variable
             name="record"
-            type="com.example.rokuon.Record" />
+            type="com.example.rokuon.data.Record" />
 
         <variable
             name="onItemClick"

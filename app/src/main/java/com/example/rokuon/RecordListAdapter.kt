@@ -3,6 +3,7 @@ package com.example.rokuon
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.rokuon.data.Record
 import com.example.rokuon.databinding.RecordListItemBinding
 
 class RecordListAdapter(

@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.rokuon.data.RecordDatabase
 import com.example.rokuon.databinding.FragmentRecordBinding
 import com.linecorp.lich.component.getComponent
 import kotlinx.coroutines.launch

@@ -9,6 +9,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.rokuon.data.Record
+import com.example.rokuon.data.RecordDatabase
 import com.example.rokuon.databinding.FragmentRecordListBinding
 import com.linecorp.lich.component.getComponent
 import kotlinx.coroutines.Dispatchers
