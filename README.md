@@ -4,7 +4,7 @@
 
 音源リスト画面 | 録音画面 | 再生画面
 ---- | ---- | ----
-<img src="https://user-images.githubusercontent.com/57245344/102087876-7e7e0200-3e5d-11eb-9fde-4153ef93a425.jpg" width="320"/>   | <img src="https://user-images.githubusercontent.com/57245344/102087904-850c7980-3e5d-11eb-8182-0631e16110bb.jpg" width="320"/>   | <img src="https://user-images.githubusercontent.com/57245344/102087918-8b025a80-3e5d-11eb-809d-36347f3f904d.jpg" width="320"/>
+<img src="https://user-images.githubusercontent.com/57245344/102087876-7e7e0200-3e5d-11eb-9fde-4153ef93a425.jpg" width="320"/>   | <img src="https://user-images.githubusercontent.com/57245344/102090700-1fba8780-3e61-11eb-9352-c68dc060c277.jpg" width="320"/>   | <img src="https://user-images.githubusercontent.com/57245344/102087918-8b025a80-3e5d-11eb-809d-36347f3f904d.jpg" width="320"/>
 
 ## 機能
 * 録音機能(一時停止、再開)
